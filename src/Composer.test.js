@@ -1,28 +1,43 @@
 import React from 'react'
 import { render, fireEvent, waitForElement } from 'react-testing-library'
 
+import enterText from './__test-utils__/enterText'
+
 import ApiError from './api/ApiError'
-import { sendEmail } from './api/emailService'
+import { searchByName, sendEmail } from './api/emailService'
 
 import Composer from './Composer'
 
 jest.mock('./api/emailService', () => {
   return {
+    searchByName: jest.fn(),
     sendEmail: jest.fn(),
   }
 })
 
-const enterText = (element, value) => {
-  fireEvent.change(element, { target: { value } })
-}
+const draftTheEmail = async (getByLabelText, getByText) => {
+  searchByName.mockImplementation(() =>
+    Promise.resolve([
+      {
+        id: '1',
+        firstName: 'Aaron',
+        lastName: 'Swartz',
+        email: 'aaron@email.com',
+      },
+    ]),
+  )
 
-const draftTheEmail = getByLabelText => {
-  const to = 'you@email.com'
+  const to = 'aaron@email.com'
   const cc = 'someone@email.com'
   const subject = 'This is a test'
   const body = "I'm emailing you from a test"
 
-  enterText(getByLabelText('To'), to)
+  enterText(getByLabelText('To'), 'a')
+  const nameToChoose = await waitForElement(() =>
+    getByText('Aaron Swartz <aaron@email.com>'),
+  )
+  fireEvent.click(nameToChoose)
+
   enterText(getByLabelText('Cc'), cc)
   enterText(getByLabelText('Subject'), subject)
   enterText(getByLabelText('Body'), body)
@@ -43,7 +58,7 @@ const doRender = () => {
   const { getByLabelText, getByText } = reactTestingLibraryFunctions
 
   return {
-    draftTheEmail: () => draftTheEmail(getByLabelText),
+    draftTheEmail: async () => await draftTheEmail(getByLabelText, getByText),
     sendTheEmail: () => fireEvent.click(getByText('Send')),
     expectTheDraftToBe: values => expectTheDraftToBe(getByLabelText, values),
     expectTheDraftToBeBlank: () =>
@@ -57,10 +72,10 @@ const doRender = () => {
   }
 }
 
-it('submits an email', () => {
+it('submits an email', async () => {
   const { draftTheEmail, sendTheEmail } = doRender()
 
-  const { to, cc, subject, body } = draftTheEmail()
+  const { to, cc, subject, body } = await draftTheEmail()
   sendTheEmail()
 
   expect(sendEmail).toHaveBeenCalledWith({
@@ -82,7 +97,7 @@ describe('giving feedback to the user after sending', () => {
       getByText,
     } = doRender()
 
-    draftTheEmail()
+    await draftTheEmail()
     sendTheEmail()
 
     await waitForElement(() => getByText('🎉 Email sent successfully!'))
@@ -102,7 +117,7 @@ describe('giving feedback to the user after sending', () => {
       container,
     } = doRender()
 
-    const { to, cc, subject, body } = draftTheEmail()
+    const { to, cc, subject, body } = await draftTheEmail()
     sendTheEmail()
 
     await waitForElement(() =>
@@ -126,7 +141,7 @@ describe('giving feedback to the user after sending', () => {
       getByText,
     } = doRender()
 
-    const { to, cc, subject, body } = draftTheEmail()
+    const { to, cc, subject, body } = await draftTheEmail()
     sendTheEmail()
 
     await waitForElement(() =>

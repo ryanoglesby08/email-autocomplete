@@ -13,6 +13,13 @@ const post = async (url, body) => {
   })
 }
 
+export const searchByName = async searchName => {
+  const response = await fetch(`${baseUrl}/search/${searchName}`)
+  const responseBody = await response.json()
+
+  return responseBody.users
+}
+
 export const sendEmail = async ({ to, cc, subject, body }) => {
   const response = await post(`${baseUrl}/submit`, {
     to,
@@ -22,14 +29,14 @@ export const sendEmail = async ({ to, cc, subject, body }) => {
   })
 
   if (response.ok) {
-    return response.json()
+    return await response.json()
   }
 
-  const json = await response.json()
+  const responseBody = await response.json()
   if (response.status >= 400 && response.status < 499) {
-    throw new ApiError('CLIENT_ERROR', json.message)
+    throw new ApiError('CLIENT_ERROR', responseBody.message)
   }
   if (response.status >= 500 && response.status < 599) {
-    throw new ApiError('SERVER_ERROR', json.message)
+    throw new ApiError('SERVER_ERROR', responseBody.message)
   }
 }

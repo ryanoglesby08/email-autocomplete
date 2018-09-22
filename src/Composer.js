@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 
 import { sendEmail } from './api/emailService'
+import Autocomplete from './Autocomplete'
 
 class Composer extends Component {
   state = {
@@ -31,8 +32,8 @@ class Composer extends Component {
               body={this.state.body}
               feedbackMessage={feedbackMessage}
               onSubmit={submitDraft}
-              onFieldChange={(field, e) =>
-                this.setState({ [field]: e.target.value })
+              onFieldChange={(field, value) =>
+                this.setState({ [field]: value })
               }
             />
           )
@@ -119,11 +120,10 @@ const ComposerForm = ({
 
     <div>
       <label htmlFor="to">To</label>
-      <input
+      <Autocomplete
         id="to"
-        type="text"
         value={to}
-        onChange={e => onFieldChange('to', e)}
+        onChange={value => onFieldChange('to', value)}
       />
     </div>
 
@@ -133,7 +133,7 @@ const ComposerForm = ({
         id="cc"
         type="text"
         value={cc}
-        onChange={e => onFieldChange('cc', e)}
+        onChange={e => onFieldChange('cc', e.target.value)}
       />
     </div>
 
@@ -143,7 +143,7 @@ const ComposerForm = ({
         id="subject"
         type="text"
         value={subject}
-        onChange={e => onFieldChange('subject', e)}
+        onChange={e => onFieldChange('subject', e.target.value)}
       />
     </div>
 
@@ -152,7 +152,7 @@ const ComposerForm = ({
       <textarea
         id="body"
         value={body}
-        onChange={e => onFieldChange('body', e)}
+        onChange={e => onFieldChange('body', e.target.value)}
       />
     </div>
 
