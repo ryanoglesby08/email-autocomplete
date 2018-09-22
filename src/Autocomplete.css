@@ -1,0 +1,21 @@
+.Autocomplete-searchResultList {
+  position: absolute;
+
+  margin: 0;
+  padding: 0;
+
+  background-color: white;
+  border: 1px solid #eeeeee;
+
+  list-style-type: none;
+}
+
+.Autocomplete-searchResult {
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  text-align: left;
+}
+.Autocomplete-searchResult:hover {
+  background-color: #eeeeee;
+}

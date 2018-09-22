@@ -120,39 +120,47 @@ const ComposerForm = ({
 
     <div>
       <label htmlFor="to">To</label>
-      <Autocomplete
-        id="to"
-        value={to}
-        onChange={value => onFieldChange('to', value)}
-      />
+      <div>
+        <Autocomplete
+          id="to"
+          value={to}
+          onChange={value => onFieldChange('to', value)}
+        />
+      </div>
     </div>
 
     <div>
       <label htmlFor="cc">Cc</label>
-      <Autocomplete
-        id="cc"
-        value={cc}
-        onChange={value => onFieldChange('cc', value)}
-      />
+      <div>
+        <Autocomplete
+          id="cc"
+          value={cc}
+          onChange={value => onFieldChange('cc', value)}
+        />
+      </div>
     </div>
 
     <div>
       <label htmlFor="subject">Subject</label>
-      <input
-        id="subject"
-        type="text"
-        value={subject}
-        onChange={e => onFieldChange('subject', e.target.value)}
-      />
+      <div>
+        <input
+          id="subject"
+          type="text"
+          value={subject}
+          onChange={e => onFieldChange('subject', e.target.value)}
+        />
+      </div>
     </div>
 
     <div>
       <label htmlFor="body">Body</label>
-      <textarea
-        id="body"
-        value={body}
-        onChange={e => onFieldChange('body', e.target.value)}
-      />
+      <div>
+        <textarea
+          id="body"
+          value={body}
+          onChange={e => onFieldChange('body', e.target.value)}
+        />
+      </div>
     </div>
 
     <button type="submit">Send</button>

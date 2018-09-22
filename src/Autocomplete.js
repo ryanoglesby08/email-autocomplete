@@ -1,6 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 
 import { searchByName } from './api/emailService'
+
+import './Autocomplete.css'
 
 class Autocomplete extends Component {
   state = {
@@ -38,7 +40,7 @@ class Autocomplete extends Component {
     const { value, onChange, ...rest } = this.props
 
     return (
-      <div>
+      <Fragment>
         <input
           {...rest}
           type="text"
@@ -49,17 +51,18 @@ class Autocomplete extends Component {
           }}
         />
         {searchResults && (
-          <ul>
+          <ul className="Autocomplete-searchResultList">
             {searchResults.map(({ id, firstName, lastName, email }) => (
               <li key={id}>
                 <button
+                  className="Autocomplete-searchResult"
                   onClick={() => this.chooseValue(email)}
                 >{`${firstName} ${lastName} <${email}>`}</button>
               </li>
             ))}
           </ul>
         )}
-      </div>
+      </Fragment>
     )
   }
 }
