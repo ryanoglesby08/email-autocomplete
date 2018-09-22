@@ -15,8 +15,10 @@
   },
   "devDependencies": {
     "husky": "^1.0.0-rc.15",
+    "jest-dom": "^1.12.1",
     "prettier": "^1.14.3",
-    "pretty-quick": "^1.7.0"
+    "pretty-quick": "^1.7.0",
+    "react-testing-library": "^5.1.0"
   },
   "husky": {
     "hooks": {
