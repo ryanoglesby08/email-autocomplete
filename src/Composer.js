@@ -1,23 +1,53 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 
-import { sendEmail } from './emailService'
+import { sendEmail } from './api/emailService'
 
 class Composer extends Component {
   state = {
+    emailSent: false,
+    errorMessage: undefined,
+    clientError: false,
+    serverError: false,
     to: '',
     cc: '',
     subject: '',
     body: '',
   }
 
-  submitDraft = () => {
-    const { cc, ...rest } = this.state
+  submitDraft = async () => {
+    const { to, cc, subject, body } = this.state
 
-    sendEmail({ ...rest, cc: cc.split(',') })
+    try {
+      await sendEmail({ to, cc: cc.split(','), subject, body })
+
+      this.setState({
+        emailSent: true,
+        to: '',
+        cc: '',
+        subject: '',
+        body: '',
+      })
+    } catch ({ kind, message }) {
+      if (kind === 'CLIENT_ERROR') {
+        this.setState({ clientError: true, errorMessage: message })
+      }
+      if (kind === 'SERVER_ERROR') {
+        this.setState({ serverError: true })
+      }
+    }
   }
 
   render() {
-    const { to, cc, subject, body } = this.state
+    const {
+      emailSent,
+      clientError,
+      serverError,
+      errorMessage,
+      to,
+      cc,
+      subject,
+      body,
+    } = this.state
 
     return (
       <form
@@ -26,6 +56,22 @@ class Composer extends Component {
           this.submitDraft()
         }}
       >
+        {emailSent && <div>🎉 Email sent successfully!</div>}
+        {serverError && (
+          <div>
+            🤭 Sorry about this, we screwed up. Will you try that again?
+          </div>
+        )}
+        {clientError && (
+          <Fragment>
+            <div>
+              🤔 Oops, looks like you made a mistake. Please correct any errors
+              and try again.
+            </div>
+            <div>{errorMessage}</div>
+          </Fragment>
+        )}
+
         <div>
           <label htmlFor="to">To</label>
           <input
