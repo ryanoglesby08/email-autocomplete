@@ -15,7 +15,24 @@ describe('sendEmail', () => {
         },
       }),
     )
-    const response = await sendEmail({})
+    const response = await sendEmail({
+      to: 'you@email.com',
+      cc: 'someone@email.com, else@email.com',
+      subject: 'the subject',
+      body: 'the body',
+    })
+
+    expect(fetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        body: JSON.stringify({
+          to: 'you@email.com',
+          cc: ['someone@email.com', 'else@email.com'],
+          subject: 'the subject',
+          body: 'the body',
+        }),
+      }),
+    )
 
     expect(response).toEqual({ message: 'success' })
   })
@@ -35,7 +52,12 @@ describe('sendEmail', () => {
     )
 
     try {
-      await sendEmail({})
+      await sendEmail({
+        to: 'you@email.com',
+        cc: 'someone@email.com, else@email.com',
+        subject: 'the subject',
+        body: 'the body',
+      })
     } catch (e) {
       expect(e).toEqual(new ApiError('CLIENT_ERROR', 'some client error'))
       done()
@@ -57,7 +79,12 @@ describe('sendEmail', () => {
     )
 
     try {
-      await sendEmail({})
+      await sendEmail({
+        to: 'you@email.com',
+        cc: 'someone@email.com, else@email.com',
+        subject: 'the subject',
+        body: 'the body',
+      })
     } catch (e) {
       expect(e).toEqual(new ApiError('SERVER_ERROR', 'some server error'))
       done()

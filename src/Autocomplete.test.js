@@ -30,7 +30,7 @@ class AutocompleteParent extends Component {
   }
 }
 
-it('selects an email from the search results', async () => {
+it('selects a single email from the search results', async () => {
   searchByName.mockImplementation(() =>
     Promise.resolve([
       {
@@ -60,4 +60,53 @@ it('selects an email from the search results', async () => {
     'azalea@email.com',
   )
   expect(document.querySelector('ul')).not.toBeInTheDocument()
+})
+
+it('selects multiple emails over multiple searches', async () => {
+  searchByName.mockImplementation(() =>
+    Promise.resolve([
+      {
+        id: '1',
+        firstName: 'Aaron',
+        lastName: 'Swartz',
+        email: 'aaron@email.com',
+      },
+      {
+        id: '2',
+        firstName: 'Iggy',
+        lastName: 'Azalea',
+        email: 'azalea@email.com',
+      },
+    ]),
+  )
+
+  const { container, getByText } = render(<AutocompleteParent />)
+
+  enterText(container.querySelector('input'), 'a')
+
+  expect(searchByName).toHaveBeenCalledWith('a')
+
+  const aaron = await waitForElement(() =>
+    getByText('Aaron Swartz <aaron@email.com>'),
+  )
+  fireEvent.click(aaron)
+
+  expect(container.querySelector('input')).toHaveAttribute(
+    'value',
+    'aaron@email.com',
+  )
+
+  enterText(container.querySelector('input'), 'aaron@email.com az')
+
+  expect(searchByName).toHaveBeenCalledWith('az')
+
+  const iggy = await waitForElement(() =>
+    getByText('Iggy Azalea <azalea@email.com>'),
+  )
+  fireEvent.click(iggy)
+
+  expect(container.querySelector('input')).toHaveAttribute(
+    'value',
+    'aaron@email.com, azalea@email.com',
+  )
 })

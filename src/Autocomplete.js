@@ -4,20 +4,33 @@ import { searchByName } from './api/emailService'
 
 class Autocomplete extends Component {
   state = {
+    chosenValues: [],
     searchResults: undefined,
   }
 
-  search = async searchName => {
-    const searchResults = await searchByName(searchName)
+  search = async value => {
+    const searchName = value.split(' ').slice(-1)[0]
 
-    this.setState({ searchResults })
+    if (searchName && !this.state.chosenValues.includes(searchName)) {
+      const searchResults = await searchByName(searchName)
+      this.setState({ searchResults })
+    }
   }
 
-  chooseEmail = email => {
+  chooseValue = email => {
     const { onChange } = this.props
+    const { chosenValues } = this.state
 
-    onChange(email)
-    this.setState({ searchResults: undefined })
+    const newValue = chosenValues.concat(email).join(', ')
+
+    onChange(newValue)
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        chosenValues: prevState.chosenValues.concat(email),
+        searchResults: undefined,
+      }
+    })
   }
 
   render() {
@@ -40,7 +53,7 @@ class Autocomplete extends Component {
             {searchResults.map(({ id, firstName, lastName, email }) => (
               <li key={id}>
                 <button
-                  onClick={() => this.chooseEmail(email)}
+                  onClick={() => this.chooseValue(email)}
                 >{`${firstName} ${lastName} <${email}>`}</button>
               </li>
             ))}

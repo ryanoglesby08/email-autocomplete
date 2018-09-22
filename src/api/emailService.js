@@ -23,7 +23,7 @@ export const searchByName = async searchName => {
 export const sendEmail = async ({ to, cc, subject, body }) => {
   const response = await post(`${baseUrl}/submit`, {
     to,
-    cc,
+    cc: cc.split(',').map(email => email.trim()),
     subject,
     body,
   })

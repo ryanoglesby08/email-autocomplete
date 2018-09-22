@@ -76,7 +76,7 @@ class SendEmail extends Component {
     const { onSuccess } = this.props
 
     try {
-      await sendEmail({ to, cc: cc.split(','), subject, body })
+      await sendEmail({ to, cc, subject, body })
 
       onSuccess()
       this.setState({
@@ -129,11 +129,10 @@ const ComposerForm = ({
 
     <div>
       <label htmlFor="cc">Cc</label>
-      <input
+      <Autocomplete
         id="cc"
-        type="text"
         value={cc}
-        onChange={e => onFieldChange('cc', e.target.value)}
+        onChange={value => onFieldChange('cc', value)}
       />
     </div>
 
