@@ -110,3 +110,49 @@ it('selects multiple emails over multiple searches', async () => {
     'aaron@email.com, azalea@email.com',
   )
 })
+
+it('navigates the search results with the arrow keys', async () => {
+  const downArrow = { keyCode: 40 }
+  const upArrow = { keyCode: 38 }
+
+  searchByName.mockImplementation(() =>
+    Promise.resolve([
+      {
+        id: '1',
+        firstName: 'Aaron',
+        lastName: 'Swartz',
+        email: 'aaron@email.com',
+      },
+      {
+        id: '2',
+        firstName: 'Iggy',
+        lastName: 'Azalea',
+        email: 'azalea@email.com',
+      },
+    ]),
+  )
+
+  const { container, getByText } = render(<AutocompleteParent />)
+
+  enterText(container.querySelector('input'), 'a')
+
+  const aaron = await waitForElement(() =>
+    getByText('Aaron Swartz <aaron@email.com>'),
+  )
+  const iggy = getByText('Iggy Azalea <azalea@email.com>')
+
+  fireEvent.keyDown(container.querySelector('input'), downArrow)
+  expect(aaron).toHaveFocus()
+
+  fireEvent.keyDown(aaron, downArrow)
+  expect(iggy).toHaveFocus()
+
+  fireEvent.keyDown(iggy, downArrow)
+  expect(iggy).toHaveFocus()
+
+  fireEvent.keyDown(iggy, upArrow)
+  expect(aaron).toHaveFocus()
+
+  fireEvent.keyDown(aaron, upArrow)
+  expect(container.querySelector('input')).toHaveFocus()
+})

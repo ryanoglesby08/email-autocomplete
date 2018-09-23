@@ -12,10 +12,14 @@
 
 .Autocomplete-searchResult {
   width: 100%;
+
   padding: 10px;
+  margin: 5px 0;
+
   border: 0;
   text-align: left;
 }
-.Autocomplete-searchResult:hover {
+.Autocomplete-searchResult:hover,
+.Autocomplete-searchResult:focus {
   background-color: #eeeeee;
 }
