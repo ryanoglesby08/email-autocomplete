@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from 'react'
 
+import './Composer.css'
+
 import { sendEmail } from './api/emailService'
 import Autocomplete from './Autocomplete'
 
@@ -45,21 +47,29 @@ class Composer extends Component {
 
 const FeedbackMessage = ({ success, error }) => {
   if (success) {
-    return <div>🎉 Email sent successfully!</div>
+    return (
+      <div className="FeedbackMessage FeedbackMessage-success">
+        🎉 Email sent successfully!
+      </div>
+    )
   } else {
     if (error.kind === 'CLIENT_ERROR') {
       return (
         <Fragment>
-          <div>
+          <div className="FeedbackMessage FeedbackMessage-error">
             🤔 Oops, looks like you made a mistake. Please correct any errors
             and try again.
           </div>
-          <div>{error.message}</div>
+          <div className="FeedbackMessage FeedbackMessage-error">
+            👉 {error.message}
+          </div>
         </Fragment>
       )
     } else {
       return (
-        <div>🤭 Sorry about this, we screwed up. Will you try that again?</div>
+        <div className="FeedbackMessage FeedbackMessage-error">
+          🤭 Sorry about this, we screwed up. Will you try that again?
+        </div>
       )
     }
   }

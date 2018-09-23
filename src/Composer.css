@@ -1,0 +1,11 @@
+.FeedbackMessage {
+  padding: 10px;
+}
+
+.FeedbackMessage-success {
+  background-color: #d4edda;
+}
+
+.FeedbackMessage-error {
+  background-color: #f8d7da;
+}
