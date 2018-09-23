@@ -4,6 +4,8 @@ import { searchByName } from './api/emailService'
 
 import './Autocomplete.css'
 
+const last = array => array.slice(-1)[0]
+
 class Autocomplete extends Component {
   searchResultElements = []
 
@@ -13,9 +15,11 @@ class Autocomplete extends Component {
   }
 
   search = async value => {
-    const searchName = value.split(' ').slice(-1)[0]
+    const { chosenValues } = this.state
 
-    if (searchName && !this.state.chosenValues.includes(searchName)) {
+    const searchName = last(value.split(' '))
+
+    if (searchName && !chosenValues.includes(searchName)) {
       const searchResults = await searchByName(searchName)
 
       this.searchResultElements = []
