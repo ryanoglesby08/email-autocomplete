@@ -47,6 +47,7 @@ yarn serve
 
 I did not consider some things because I had spent more than the recommended 4 hours.
 
+- There are probably some edge cases with the autocomplete field that I didn't deal with, such as deleting emails.
 - There are a couple of accessibility warnings in the console
 - Dealing with empty search results
 - Client side validations. Since the API performs validations, I left this out.
